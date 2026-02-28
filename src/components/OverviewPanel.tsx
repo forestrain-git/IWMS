@@ -77,7 +77,7 @@ export default function OverviewPanel() {
         berthOccupancy: Math.max(0, Math.min(100, prevData.berthOccupancy + (Math.random() * 10) - 5)),
         transferVehicles: {
           ...prevData.transferVehicles,
-          active: Math.max(0, Math.min(prevData.transferVehicles.total, prevData.transferVehicles.active + Math.floor(Math.random() * 3) - 1))
+          active: Math.max(0, Math.min(prevData.transferVehicles?.total || 0, (prevData.transferVehicles?.active || 0) + Math.floor(Math.random() * 3) - 1))
         },
         lastUpdate: new Date().toLocaleTimeString('zh-CN')
       }))
@@ -100,7 +100,7 @@ export default function OverviewPanel() {
       setAnimatedValues({
         dailyVehicles: Math.floor(data.dailyVehicles * easeOutQuart),
         berthOccupancy: Math.floor(data.berthOccupancy * easeOutQuart),
-        activeVehicles: Math.floor(data.transferVehicles.active * easeOutQuart)
+        activeVehicles: Math.floor(data.transferVehicles?.active * easeOutQuart || 0)
       })
       
       if (currentStep >= steps) {
@@ -109,7 +109,7 @@ export default function OverviewPanel() {
     }, interval)
     
     return () => clearInterval(timer)
-  }, [data.dailyVehicles, data.berthOccupancy, data.transferVehicles.active])
+  }, [data.dailyVehicles, data.berthOccupancy, data.transferVehicles?.active])
 
   const wasteTypeColors = {
     household: 'bg-blue-500',
@@ -125,21 +125,21 @@ export default function OverviewPanel() {
     recyclable: '可回收垃圾'
   }
 
-  const pieData = Object.entries(data.wasteTypes).map(([type, percentage]) => ({
+  const pieData = Object.entries(data.wasteTypes || {}).map(([type, percentage]) => ({
     name: wasteTypeLabels[type as keyof typeof wasteTypeLabels],
     value: percentage,
     color: type === 'household' ? '#3B82F6' : type === 'construction' ? '#F97316' : type === 'hazardous' ? '#EF4444' : '#10B981'
   }))
 
   const containerData = [
-    { name: '正常', value: data.containerStatus.normal, color: '#10B981' },
-    { name: '预警', value: data.containerStatus.warning, color: '#F59E0B' },
-    { name: '满箱', value: data.containerStatus.full, color: '#EF4444' }
+    { name: '正常', value: data.containerStatus?.normal || 0, color: '#10B981' },
+    { name: '预警', value: data.containerStatus?.warning || 0, color: '#F59E0B' },
+    { name: '满箱', value: data.containerStatus?.full || 0, color: '#EF4444' }
   ]
 
   const radialData = [
-    { name: '占用', value: data.berthOccupancy, fill: '#F97316' },
-    { name: '空闲', value: 100 - data.berthOccupancy, fill: '#E5E7EB' }
+    { name: '占用', value: data.berthOccupancy || 0, fill: '#F97316' },
+    { name: '空闲', value: 100 - (data.berthOccupancy || 0), fill: '#E5E7EB' }
   ]
 
   return (
@@ -162,7 +162,7 @@ export default function OverviewPanel() {
             </div>
             <div className="flex items-center text-blue-100 text-sm">
               <Clock className="w-4 h-4 mr-1" />
-              {data.lastUpdate}
+              {data.lastUpdate || '未知时间'}
             </div>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function OverviewPanel() {
             <div className="flex items-center justify-between text-white">
               <div>
                 <p className="text-green-100 text-sm font-medium mb-1">转运车辆</p>
-                <p className="text-3xl font-bold">{animatedValues.activeVehicles}/{data.transferVehicles.total}</p>
+                <p className="text-3xl font-bold">{animatedValues.activeVehicles}/{data.transferVehicles?.total || 0}</p>
                 <div className="mt-2 text-green-100 text-xs">
                   运行中 {animatedValues.activeVehicles} 辆
                 </div>
@@ -224,9 +224,9 @@ export default function OverviewPanel() {
             <div className="flex items-center justify-between text-white">
               <div>
                 <p className="text-purple-100 text-sm font-medium mb-1">处置场状态</p>
-                <p className="text-3xl font-bold">{data.disposalSites.available}/{data.disposalSites.total}</p>
+                <p className="text-3xl font-bold">{data.disposalSites?.available || 0}/{data.disposalSites?.total || 0}</p>
                 <div className="mt-2 text-purple-100 text-xs">
-                  可用 {data.disposalSites.available} 个
+                  可用 {data.disposalSites?.available || 0} 个
                 </div>
               </div>
               <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
@@ -303,10 +303,10 @@ export default function OverviewPanel() {
                     <Cell key={`cell-${index}`} fill={entry.fill} />
                   ))}
                 </Pie>
-                <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" className="text-3xl font-bold" fill="#374151">
-                  {Math.round(data.berthOccupancy)}%
+                <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" style={{ fontSize: '1.875rem', fontWeight: 'bold', fill: '#374151' }}>
+                  {Math.round(data.berthOccupancy || 0)}%
                 </text>
-                <text x="50%" y="60%" textAnchor="middle" dominantBaseline="middle" className="text-sm" fill="#6B7280">
+                <text x="50%" y="60%" textAnchor="middle" dominantBaseline="middle" style={{ fontSize: '0.875rem', fill: '#6B7280' }}>
                   占用率
                 </text>
                 <Tooltip />
@@ -314,7 +314,7 @@ export default function OverviewPanel() {
             </ResponsiveContainer>
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-500">18个泊位中</p>
-              <p className="text-lg font-semibold text-gray-800">{Math.round(18 * data.berthOccupancy / 100)} 个占用</p>
+              <p className="text-lg font-semibold text-gray-800">{Math.round(18 * (data.berthOccupancy || 0) / 100)} 个占用</p>
             </div>
           </div>
         </div>
@@ -376,7 +376,7 @@ export default function OverviewPanel() {
                   </div>
                   <p className="text-sm font-medium text-gray-700">{item.name}</p>
                   <p className="text-xs text-gray-500 mt-1">
-                    {Math.round(item.value / (data.containerStatus.normal + data.containerStatus.warning + data.containerStatus.full) * 100)}%
+                    {Math.round(item.value / ((data.containerStatus?.normal || 0) + (data.containerStatus?.warning || 0) + (data.containerStatus?.full || 0)) * 100) || 0}%
                   </p>
                 </div>
               ))}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Truck, Package, Activity, AlertCircle, TrendingUp, Clock, BarChart3, Zap, Shield, Factory, Users, ArrowUp, ArrowDown, Minus } from 'lucide-react'
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadialBarChart, RadialBar, Legend } from 'recharts'
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 
 interface OverviewData {
   dailyVehicles: number

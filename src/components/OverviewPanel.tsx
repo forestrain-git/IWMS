@@ -303,10 +303,10 @@ export default function OverviewPanel() {
                     <Cell key={`cell-${index}`} fill={entry.fill} />
                   ))}
                 </Pie>
-                <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" className="text-3xl font-bold fill-gray-800">
+                <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" className="text-3xl font-bold" fill="#374151">
                   {Math.round(data.berthOccupancy)}%
                 </text>
-                <text x="50%" y="60%" textAnchor="middle" dominantBaseline="middle" className="text-sm text-gray-500">
+                <text x="50%" y="60%" textAnchor="middle" dominantBaseline="middle" className="text-sm" fill="#6B7280">
                   占用率
                 </text>
                 <Tooltip />

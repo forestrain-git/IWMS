@@ -7,7 +7,7 @@ export default defineConfig({
     port: 3000,
     open: true
   },
-  base: '/windsurf-智慧垃圾模块尝试/',
+  base: '/IWMS/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets'

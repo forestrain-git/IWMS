@@ -73,8 +73,8 @@ export default function OverviewPanel() {
     const interval = setInterval(() => {
       setData(prevData => ({
         ...prevData,
-        dailyVehicles: prevData.dailyVehicles + Math.floor(Math.random() * 5) - 2,
-        berthOccupancy: Math.max(0, Math.min(100, prevData.berthOccupancy + (Math.random() * 10) - 5)),
+        dailyVehicles: (prevData.dailyVehicles || 0) + Math.floor(Math.random() * 5) - 2,
+        berthOccupancy: Math.max(0, Math.min(100, (prevData.berthOccupancy || 0) + (Math.random() * 10) - 5)),
         transferVehicles: {
           ...prevData.transferVehicles,
           active: Math.max(0, Math.min(prevData.transferVehicles?.total || 0, (prevData.transferVehicles?.active || 0) + Math.floor(Math.random() * 3) - 1))
@@ -98,8 +98,8 @@ export default function OverviewPanel() {
       const easeOutQuart = 1 - Math.pow(1 - progress, 4)
       
       setAnimatedValues({
-        dailyVehicles: Math.floor(data.dailyVehicles * easeOutQuart),
-        berthOccupancy: Math.floor(data.berthOccupancy * easeOutQuart),
+        dailyVehicles: Math.floor((data.dailyVehicles || 0) * easeOutQuart),
+        berthOccupancy: Math.floor((data.berthOccupancy || 0) * easeOutQuart),
         activeVehicles: Math.floor(data.transferVehicles?.active * easeOutQuart || 0)
       })
       
@@ -109,7 +109,7 @@ export default function OverviewPanel() {
     }, interval)
     
     return () => clearInterval(timer)
-  }, [data.dailyVehicles, data.berthOccupancy, data.transferVehicles?.active])
+  }, [(data?.dailyVehicles || 0), (data?.berthOccupancy || 0), data.transferVehicles?.active])
 
   const wasteTypeColors = {
     household: 'bg-blue-500',
